@@ -6,4 +6,5 @@
 
 
 ## Added Permissions
-- InitiateLayerUpload
+- ecr:InitiateLayerUpload
+- ecr:UploadLayerPart
