@@ -2,6 +2,4 @@
 
 ## Testing ECS Deployment if tesing is passed
 
-## Added admin permission to test deployemnt.
-
-### Testing again
+## Setting up minimum permission boundary
