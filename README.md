@@ -14,3 +14,4 @@
 - ecr:PutImageScanningConfiguration
 - ecr:PutImage
 - iam:PassRole
+- ecs:DescribeServices
