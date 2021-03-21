@@ -13,3 +13,4 @@
 - ecr:PutImageTagMutability
 - ecr:PutImageScanningConfiguration
 - ecr:PutImage
+- iam:PassRole
