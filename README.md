@@ -3,3 +3,7 @@
 ## Testing ECS Deployment if tesing is passed
 
 ## Setting up minimum permission boundary
+
+
+## Added Permissions
+- InitiateLayerUpload
