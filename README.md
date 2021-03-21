@@ -6,5 +6,10 @@
 
 
 ## Added Permissions
+- ecr: List & Read All
+## Added Permissions
 - ecr:InitiateLayerUpload
 - ecr:UploadLayerPart
+- ecr:PutImageTagMutability
+- ecr:PutImageScanningConfiguration
+- ecr:PutImage
