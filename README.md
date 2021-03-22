@@ -2,29 +2,29 @@
 
 ## Prerequisites
 
-For deploying an application image to the registry you shuold have:
+For deploying an application image to the registry you should have:
 
 - An application (We are deploying a simple python app, check [here](https://aws.amazon.com/blogs/containers/create-a-ci-cd-pipeline-for-amazon-ecs-with-github-actions-and-aws-codebuild-tests/))
-- ECS infrastructure
+- ECS infrastructure (existing registry to push image)
 
-  - We created it using [AWS CDK for python](https://docs.aws.amazon.com/cdk/latest/guide/work-with-cdk-python.html)
+  - We created it using [AWS CDK for python](https://docs.aws.amazon.com/cdk/latest/guide/work-with-cdk-python.html) by following above guide.
   - And configured by replacing the contents of the file "ecs_devops_sandbox_cdk/ecs_devops_sandbox_cdk_stack.py" with [ECS_INFRA_setup](ECS_INFRA_setup.py)
-  - [this](https://aws.amazon.com/blogs/containers/create-a-ci-cd-pipeline-for-amazon-ecs-with-github-actions-and-aws-codebuild-tests/) guide should setup your app as well as your Infrastructure.
+  - [this](https://aws.amazon.com/blogs/containers/create-a-ci-cd-pipeline-for-amazon-ecs-with-github-actions-and-aws-codebuild-tests/) guide (same as above) should setup your app as well as your Infrastructure.
 
 ## After you push your code to Github
 
 ### These are the secrets that you need to configure in your repository
 
-- __AWS_ACCESS_KEY_ID__ - create a new AWS user with only programmatic access and no permissions initially.
-- __AWS_SECRET_ACCESS_KEY__ - secret of this user
-- __AWS_ROLE_EXTERNAL_ID__ - a simple secret string to only allow this user to assume role and deny other users.
+- __AWS_ACCESS_KEY_ID__ - Create a new AWS user with only programmatic access and no permissions initially.
+- __AWS_SECRET_ACCESS_KEY__ - Secret of this user
+- __AWS_ROLE_EXTERNAL_ID__ - A simple secret string to only allow this user to assume role and restrict other users.
 - __AWS_ROLE_TO_ASSUME__ - ARN of the assumed role (even ROLE_NAME will work if AWS_USER and the ROLE_TO_BE_ASSUMED belong to same account.)
 
-## The Assumed role should have:
+## Policy and Roles configuration to be done in AWS account
 
-### The policy to build, tag and deploy image to the registry
+### The Assumed role should have the policy to build, tag and deploy image to the registry
 
-#### Go to AWS -> IAM -> Roles -> Select Assumed Role -> and attach this policy (inline_policy)
+#### Go to AWS -> IAM -> Roles -> Select Assumed Role -> and attach this policy (inline_policy, make sure to replace the required files inside it.)
 
 ```json
 
@@ -77,7 +77,7 @@ For deploying an application image to the registry you shuold have:
 }
 ```
 
-### Assumed role shuld have a Trust Relationship with our AWS GITHUB ACTION USER
+### Assumed role should have a Trust Relationship with our AWS GITHUB ACTION USER
 
 #### Go to AWS -> IAM -> Roles -> Select Assumed Role -> Trust Relationship and attach this policy
 
@@ -137,4 +137,4 @@ For deploying an application image to the registry you shuold have:
 
 - Go to github , click on actions
 - Create new workflow and select Deploy to Amazon ECS
-- Configure the settings and you are done
+- Configure the settings such as repo name, cluster name and service name and you are done
