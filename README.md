@@ -1,4 +1,4 @@
-# Setup CI/CD using Github Actions and Deploy the app in AWS ECS
+# Setup CI/CD using Github Actions and Deploy the app in AWS ECS 
 
 ## Prerequisites
 
