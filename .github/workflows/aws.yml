@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Check commit status
-      id: run script
+      id: run_script
       run: |
         # 1) Assume role for running cloud formation
         CREDENTIALS=`aws sts assume-role --role-arn "arn:aws:iam::455180012233:role/Github-Actions-Assume-this-Role" --role-session-name AWSCLI-Session --duration-seconds 900 --output=json`
