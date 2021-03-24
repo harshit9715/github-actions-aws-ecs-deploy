@@ -25,6 +25,9 @@ jobs:
     - name: Assume another role
       id: assume_role
       run: |
+        # 1) Assume role for running cloud formation
+        CREDENTIALS=`aws sts assume-role --role-arn ${{ secrets[format('ASSUMEROLE_{0}', steps.extract_branch.outputs.branch )] }} --role-session-name AWSCLI-Session --duration-seconds 900 --output=json`
+        # 2) Capture current credentials to reset after executing command
         export ORIGINAL_AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
         export ORIGINAL_AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
         aws sts get-caller-identity
