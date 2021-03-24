@@ -25,9 +25,6 @@ jobs:
     - name: Assume another role
       id: assume_role
       run: |
-        # 1) Assume role for running cloud formation
-        CREDENTIALS=`aws sts assume-role --role-arn ${{ secrets[format('ASSUMEROLE_{0}', steps.extract_branch.outputs.branch )] }} --role-session-name AWSCLI-Session --duration-seconds 900 --output=json`
-        # 2) Capture current credentials to reset after executing command
         export ORIGINAL_AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
         export ORIGINAL_AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
         aws sts get-caller-identity
@@ -37,16 +34,8 @@ jobs:
         export AWS_SECRET_ACCESS_KEY=`echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey'`
         export AWS_SESSION_TOKEN=`echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken'`
         export AWS_EXPIRATION=`echo ${CREDENTIALS} | jq -r '.Credentials.Expiration'`
-        
-    - name: Verify Role again
-      id: Verify_role_again
-      run: |        
         # 4) Execute command as assumed role
         aws sts get-caller-identity
-        
-    - name: Remove Role
-      id: remove_role
-      run: |        
         # 5) Clean up assume role environment variables
         unset AWS_ACCESS_KEY_ID
         unset AWS_SECRET_ACCESS_KEY
@@ -58,6 +47,7 @@ jobs:
         # 7) Clean up temporary storage
         unset ORIGINAL_AWS_ACCESS_KEY_ID
         unset ORIGINAL_AWS_SECRET_ACCESS_KEY
+        
     
 #     - name: Check commit status
 #       id: commit-status
