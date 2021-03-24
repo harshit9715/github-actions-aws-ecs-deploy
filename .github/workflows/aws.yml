@@ -12,13 +12,13 @@ jobs:
 
     steps:
     - name: Verify Role
-      id: Verify role
+      id: Verify_role
       run: |        
         # 4) Execute command as assumed role
         aws sts get-caller-identity
         
     - name: Assume another role
-      id: run_script
+      id: assume_role
       run: |
         # 1) Assume role for running cloud formation
         CREDENTIALS=`aws sts assume-role --role-arn "arn:aws:iam::455180012233:role/Github-Actions-Assume-this-Role" --role-session-name AWSCLI-Session --duration-seconds 900 --output=json`
@@ -34,13 +34,13 @@ jobs:
         export AWS_EXPIRATION=`echo ${CREDENTIALS} | jq -r '.Credentials.Expiration'`
         
     - name: Verify Role again
-      id: Verify role again
+      id: Verify_role_again
       run: |        
         # 4) Execute command as assumed role
         aws sts get-caller-identity
         
     - name: Remove Role
-      id: remove role
+      id: remove_role
       run: |        
         # 5) Clean up assume role environment variables
         unset AWS_ACCESS_KEY_ID
