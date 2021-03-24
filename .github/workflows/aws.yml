@@ -21,7 +21,7 @@ jobs:
       id: assume_role
       run: |
         # 1) Assume role for running cloud formation
-        CREDENTIALS=`aws sts assume-role --role-arn "arn:aws:iam::455180012233:role/Github-Actions-Assume-this-Role" --role-session-name AWSCLI-Session --duration-seconds 900 --output=json`
+        CREDENTIALS=`aws sts assume-role --role-arn ${{ secrets[format('ASSUMEROLE_{0}', GITHUB_REF_SLUG)] }} --role-session-name AWSCLI-Session --duration-seconds 900 --output=json`
         # 2) Capture current credentials to reset after executing command
         export ORIGINAL_AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
         export ORIGINAL_AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
