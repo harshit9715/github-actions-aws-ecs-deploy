@@ -11,7 +11,13 @@ jobs:
     runs-on: 9715
 
     steps:
-    - name: Check commit status
+    - name: Verify Role
+      id: Verify role
+      run: |        
+        # 4) Execute command as assumed role
+        aws sts get-caller-identity
+        
+    - name: Assume another role
       id: run_script
       run: |
         # 1) Assume role for running cloud formation
@@ -26,8 +32,16 @@ jobs:
         export AWS_SECRET_ACCESS_KEY=`echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey'`
         export AWS_SESSION_TOKEN=`echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken'`
         export AWS_EXPIRATION=`echo ${CREDENTIALS} | jq -r '.Credentials.Expiration'`
+        
+    - name: Verify Role again
+      id: Verify role again
+      run: |        
         # 4) Execute command as assumed role
         aws sts get-caller-identity
+        
+    - name: Remove Role
+      id: remove role
+      run: |        
         # 5) Clean up assume role environment variables
         unset AWS_ACCESS_KEY_ID
         unset AWS_SECRET_ACCESS_KEY
