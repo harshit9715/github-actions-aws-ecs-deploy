@@ -11,82 +11,14 @@ jobs:
     runs-on: 9715
 
     steps:
-#     - name: Extract branch name
-#       shell: bash
-#       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-#       id: extract_branch
-      
-#     - name: Verify Role
-#       id: Verify_role
-#       run: |        
-#         # 4) Execute command as assumed role
-#         aws sts get-caller-identity
-        
-#     - name: Assume another role
-#       id: assume_role
-#       run: |
-#         # 1) Assume role for running cloud formation
-#         CREDENTIALS=`aws sts assume-role --role-arn ${{ secrets[format('ASSUMEROLE_{0}', steps.extract_branch.outputs.branch )] }} --role-session-name AWSCLI-Session --duration-seconds 900 --output=json`
-#         # 2) Capture current credentials to reset after executing command
-#         export ORIGINAL_AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-#         export ORIGINAL_AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-#         aws sts get-caller-identity
-#         # 3) Set AWS Assumed Role Credentials on ENV
-        
-#         export AWS_ACCESS_KEY_ID=`echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId'`
-#         export AWS_SECRET_ACCESS_KEY=`echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey'`
-#         export AWS_SESSION_TOKEN=`echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken'`
-#         export AWS_EXPIRATION=`echo ${CREDENTIALS} | jq -r '.Credentials.Expiration'`
-#         # 4) Execute command as assumed role
-#         aws sts get-caller-identity
-#         echo "##[set-output name=AWS_DEFAULT_REGION;]echo $('ap-south-1')"
-#         # 5) Clean up assume role environment variables
-#         unset AWS_ACCESS_KEY_ID
-#         unset AWS_SECRET_ACCESS_KEY
-#         unset AWS_SESSION_TOKEN
-#         unset AWS_EXPIRATION
-#         # 6) Reset to original credentials
-#         export AWS_ACCESS_KEY_ID=${ORIGINAL_AWS_ACCESS_KEY_ID}
-#         export AWS_SECRET_ACCESS_KEY=${ORIGINAL_AWS_SECRET_ACCESS_KEY}
-#         # 7) Clean up temporary storage
-#         unset ORIGINAL_AWS_ACCESS_KEY_ID
-#         unset ORIGINAL_AWS_SECRET_ACCESS_KEY
-#     - name: Verify Role
-#       id: again
-#       run: |        
-#         # 4) Execute command as assumed role
-#         aws sts get-caller-identity
-#     - name: Verify Role
-#       id: Verify_role_updated
-#       run: |
-#         echo $AWS_DEFAULT_REGION
-#         export AWS_DEFAULT_REGION={{steps.assume_role.outputs.AWS_DEFAULT_REGION}}
-#         echo $AWS_DEFAULT_REGION
-#         export AWS_ACCESS_KEY_ID={{steps.assume_role.outputs.AWS_ACCESS_KEY_ID}}
-#         export AWS_SECRET_ACCESS_KEY={{steps.assume_role.outputs.AWS_SECRET_ACCESS_KEY}}
-#         export AWS_SESSION_TOKEN={{steps.assume_role.outputs.AWS_SESSION_TOKEN}}
-#         export AWS_EXPIRATION={{steps.assume_role.outputs.AWS_EXPIRATION}}
-#         # 4) Execute command as assumed role
-#         aws sts get-caller-identity
-    
-#     - name: Check commit status
-#       id: commit-status
-#       run: |
-#        Check the status of the Git commit
-#        CURRENT_STATUS=$(curl --url https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }}/status --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' | jq -r '.state');
-#        echo "Current status is: $CURRENT_STATUS"
-#        while [ "${CURRENT_STATUS^^}" = "PENDING" ]; 
-#          do sleep 10; 
-#          CURRENT_STATUS=$(curl --url https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }}/status --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' | jq -r '.state');
-#        done;
-#        echo "Current status is: $CURRENT_STATUS"
-#        if [ "${CURRENT_STATUS^^}" = "FAILURE" ]; 
-#          then echo "Commit status failed. Canceling execution"; 
-#          exit 1; 
-#        fi
-        
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+
     - name: Checkout
       uses: actions/checkout@v1
+
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -95,17 +27,11 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-south-1
-        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        role-to-assume: ${{ secrets[format('ASSUMEROLE_{0}', steps.extract_branch.outputs.branch )] }}
         role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
         role-duration-seconds: 1200
         role-session-name: MySessionName
         
-    - name: Verify Role
-      id: again
-      run: |        
-        # 4) Execute command as assumed role
-        aws sts get-caller-identity
-
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
