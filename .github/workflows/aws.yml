@@ -32,11 +32,11 @@ jobs:
         export ORIGINAL_AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
         aws sts get-caller-identity
         # 3) Set AWS Assumed Role Credentials on ENV
-        export AWS_DEFAULT_REGION=eu-west-1
-        export AWS_ACCESS_KEY_ID=`echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId'`
-        export AWS_SECRET_ACCESS_KEY=`echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey'`
-        export AWS_SESSION_TOKEN=`echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken'`
-        export AWS_EXPIRATION=`echo ${CREDENTIALS} | jq -r '.Credentials.Expiration'`
+        set-output AWS_DEFAULT_REGION=ap-south-1
+        set-output AWS_ACCESS_KEY_ID=`echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId'`
+        set-output AWS_SECRET_ACCESS_KEY=`echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey'`
+        set-output AWS_SESSION_TOKEN=`echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken'`
+        set-output AWS_EXPIRATION=`echo ${CREDENTIALS} | jq -r '.Credentials.Expiration'`
         # 4) Execute command as assumed role
         aws sts get-caller-identity
         # 5) Clean up assume role environment variables
@@ -50,7 +50,21 @@ jobs:
         # 7) Clean up temporary storage
         unset ORIGINAL_AWS_ACCESS_KEY_ID
         unset ORIGINAL_AWS_SECRET_ACCESS_KEY
-        
+    - name: Verify Role
+      id: again
+      run: |        
+        # 4) Execute command as assumed role
+        aws sts get-caller-identity
+    - name: Verify Role
+      id: Verify_role_updated
+      run: |
+        export AWS_DEFAULT_REGION=ap-south-1
+        export AWS_ACCESS_KEY_ID={{steps.assume_role.outputs.AWS_ACCESS_KEY_ID}}
+        export AWS_SECRET_ACCESS_KEY={{steps.assume_role.outputs.AWS_SECRET_ACCESS_KEY}}
+        export AWS_SESSION_TOKEN={{steps.assume_role.outputs.AWS_SESSION_TOKEN}}
+        export AWS_EXPIRATION={{steps.assume_role.outputs.AWS_EXPIRATION}}
+        # 4) Execute command as assumed role
+        aws sts get-caller-identity
     
 #     - name: Check commit status
 #       id: commit-status
