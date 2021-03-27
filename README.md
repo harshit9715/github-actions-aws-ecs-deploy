@@ -1,4 +1,7 @@
-# Setup CI/CD using Github Actions and Deploy the app in AWS ECS 
+# Setup CI/CD using Github Actions and deploy an app in AWS ECS 
+
+## Note
+This repo uses github provided default runner for deployment, if you want to use an EC2 and deploy your application using that, check [here](https://github.com/harshit9715/github-actions-ec2-runner-ecs-deploy).
 
 ## Prerequisites
 
